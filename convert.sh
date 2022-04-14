@@ -95,14 +95,8 @@ mv tz.img $ZIP/firmware-update
 mv uefisecapp.img $ZIP/firmware-update
 mv vbmeta.img $ZIP/firmware-update
 mv vbmeta_system.img $ZIP/firmware-update
-mv vendor_boot.img $ZIP/firmware-update
 mv xbl.img $ZIP/firmware-update
 mv xbl_config.img $ZIP/firmware-update
-if [[ -e cust.img ]]; then
-mv cust.img $ZIP/firmware-update
-sed -i "s/#f2//g" $ZIP/META-INF/com/google/android/updater-script
-fi
-cd $CURRENTDIR
 
 # Version
 MIUIVERSION=$(grep ro.miui.ui.version.code= $OUT/system/system/system/build.prop | sed "s/ro.miui.ui.version.code=//g"; )
@@ -134,7 +128,7 @@ $TOOLS/mkuserimg_mke2fs.sh "odm" "odm.img" "ext4" "/odm" $odmz -j "0" -T "123076
 mv odm.img $OUT
 rm -rf ../odm
 cd $OUT
-echo "configs dynamic list"
+echo ". configs dynamic list"
 systemop=`du -b system.img | awk '{print $1}'`
 sed -i "s/systemop/$systemop/g" $ZIP/dynamic_partitions_op_list
 system_extop=`du -b system_ext.img | awk '{print $1}'`
@@ -145,13 +139,13 @@ productop=`du -b product.img | awk '{print $1}'`
 sed -i "s/productop/$productop/g" $ZIP/dynamic_partitions_op_list
 odmop=`du -b odm.img | awk '{print $1}'`
 sed -i "s/odmop/$odmop/g" $ZIP/dynamic_partitions_op_list
-echo "rw-sparse images"
+echo ". rw-sparse images"
 img2simg system.img systemrw.img; rm -rf system.img
 img2simg product.img productrw.img; rm -rf product.img
 img2simg system_ext.img system_extrw.img; rm -rf system_ext.img
 img2simg vendor.img vendorrw.img; rm -rf vendor.img
 img2simg odm.img odmrw.img; rm -rf odm.img
-echo "sparse a dat"
+echo ". sparse a dat"
 $TOOLS/img2sdat/img2sdat.py -v 4 -o $ZIP -p system systemrw.img  >/dev/null
 $TOOLS/img2sdat/img2sdat.py -v 4 -o $ZIP -p system_ext system_extrw.img  >/dev/null
 $TOOLS/img2sdat/img2sdat.py -v 4 -o $ZIP -p vendor vendorrw.img  >/dev/null
@@ -161,19 +155,18 @@ rm -rf $OUT/*
 
 # brotli
 cd $ZIP
-echo "convertiendo images a br"
+echo ". convertiendo images a br"
 brotli -j -v -q 6 system.new.dat
 brotli -j -v -q 6 system_ext.new.dat
 brotli -j -v -q 6 vendor.new.dat
 brotli -j -v -q 6 product.new.dat
 brotli -j -v -q 6 odm.new.dat
-echo "Empaquetando"
-DATE=$(date +%Y/%m/%d-%H:%M)
-zip -ry MIUI$MIUIVERSION-Alioth-$ROMBUILD-A$ROMANDROID-$DATE-SC.zip *  >/dev/null
-mv *.zip $CURRENTDIR
+echo ". Empaquetando"
+zip -ry MIUI$MIUIVERSION-Alioth-$ROMBUILD-A$ROMANDROID-$1-SC.zip *  >/dev/null
+mv MIUI$MIUIVERSION-Alioth-$ROMBUILD-A$ROMANDROID-$1-SC.zip $CURRENTDIR
 echo "listo"
 echo "Subiendo a Sourceforge....."
 cd $CURRENTDIR
 mv $TOOLS/uploadsf $CURRENTDIR
-sudo bash $CURRENTDIR/uploadsf *-SC.zip
+sudo bash $CURRENTDIR/uploadsf MIUI$MIUIVERSION-Alioth-$ROMBUILD-A$ROMANDROID-$1-SC.zip
  

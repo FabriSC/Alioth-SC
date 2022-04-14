@@ -4,8 +4,7 @@ getprop("ro.product.device") == "alioth" || abort("E3004: This package is for \"
 ui_print("Extracting boot...");
 package_extract_file("boot.img", "/dev/block/bootdevice/by-name/boot_a");
 package_extract_file("boot.img", "/dev/block/bootdevice/by-name/boot_b");
-package_extract_file("firmware-update/vendor_boot.img", "/dev/block/bootdevice/by-name/vendor_boot_a");
-package_extract_file("firmware-update/vendor_boot.img", "/dev/block/bootdevice/by-name/vendor_boot_b");
+
 
 # ---- radio update tasks ----
 
@@ -54,7 +53,7 @@ package_extract_file("firmware-update/vbmeta.img", "/dev/block/bootdevice/by-nam
 package_extract_file("firmware-update/vbmeta.img", "/dev/block/bootdevice/by-name/vbmeta_b");
 package_extract_file("firmware-update/vbmeta_system.img", "/dev/block/bootdevice/by-name/vbmeta_system_a");
 package_extract_file("firmware-update/vbmeta_system.img", "/dev/block/bootdevice/by-name/vbmeta_system_b");
-#f2package_extract_file("firmware-update/cust.img", "/dev/block/bootdevice/by-name/cust");
+
 
 
 # --- Start patching dynamic partitions ---
